@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: Helvetica;
+
+  src: url("/public/fonts/HELN.TTF") format("TTF");
+}
+@theme {
+  --font-helvetica: "Helvetica Neue", sans-serif;
+}

@@ -1,0 +1,152 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const UserTable = () => {
+  const [users, setUsers] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [search, setSearch] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
+
+  useEffect(() => {
+    axios.get("https://randomuser.me/api?results=30").then((res) => {
+      setUsers(res.data.results);
+      setFiltered(res.data.results);
+    });
+  }, []);
+
+  useEffect(() => {
+    const keyword = search.toLowerCase();
+    const filteredData = users.filter((user) =>
+      JSON.stringify(user).toLowerCase().includes(keyword)
+    );
+    setFiltered(filteredData);
+    setCurrentPage(1); // Reset to first page on new search
+  }, [search, users]);
+
+  const sortBy = (keyPath) => {
+    let direction = "asc";
+    if (sortConfig.key === keyPath && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+
+    const getValue = (obj, path) =>
+      path.split(".").reduce((acc, key) => acc?.[key] || "", obj);
+
+    const sorted = [...filtered].sort((a, b) => {
+      const valA = getValue(a, keyPath).toString().toLowerCase();
+      const valB = getValue(b, keyPath).toString().toLowerCase();
+
+      return direction === "asc"
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
+    });
+
+    setSortConfig({ key: keyPath, direction });
+    setFiltered(sorted);
+  };
+
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
+  const indexOfLast = currentPage * usersPerPage;
+  const indexOfFirst = indexOfLast - usersPerPage;
+  const currentUsers = filtered.slice(indexOfFirst, indexOfLast);
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 py-10 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6">User Table</h1>
+
+        <input
+          type="text"
+          placeholder="Search users..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="mb-6 p-2 w-full max-w-md border rounded font-helvetica"
+        />
+
+        <div className="overflow-auto">
+          <table className="min-w-full bg-white rounded shadow-md">
+            <thead>
+              <tr className="bg-gray-200 text-left">
+                <th
+                  onClick={() => sortBy("name.first")}
+                  className="p-3 cursor-pointer font-helvetica">
+                  Name
+                </th>
+                <th
+                  onClick={() => sortBy("email")}
+                  className="p-3 cursor-pointer font-helvetica">
+                  Email
+                </th>
+                <th
+                  onClick={() => sortBy("location.country")}
+                  className="p-3 cursor-pointer font-helvetica">
+                  Country
+                </th>
+                <th className="p-3 font-helvetica">Profile</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentUsers.map((user, index) => (
+                <tr key={index} className="border-b hover:bg-gray-50">
+                  <td className="p-3">
+                    {user.name.first} {user.name.last}
+                  </td>
+                  <td className="p-3">{user.email}</td>
+                  <td className="p-3">{user.location.country}</td>
+                  <td className="p-3">
+                    <img
+                      src={user.picture.thumbnail}
+                      alt="avatar"
+                      className="w-10 h-10 rounded-full"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {currentUsers.length === 0 && (
+            <p className="mt-4 text-gray-600">No users found.</p>
+          )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center items-center gap-2 mt-6">
+          <button
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            disabled={currentPage === 1}
+            onClick={() => goToPage(currentPage - 1)}>
+            Prev
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => goToPage(page)}
+              className={`px-3 py-1 rounded cursor-pointer ${
+                currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200"
+              }`}>
+              {page}
+            </button>
+          ))}
+          <button
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            disabled={currentPage === totalPages}
+            onClick={() => goToPage(currentPage + 1)}>
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserTable;
