@@ -13,7 +13,7 @@ const UserTable = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/users");
+        const res = await axios.get("https://taskapi-tm8t.onrender.com/users");
         setUsers(res.data);
         setFiltered(res.data);
       } catch (error) {
