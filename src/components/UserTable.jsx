@@ -11,10 +11,18 @@ const UserTable = () => {
   const usersPerPage = 10;
 
   useEffect(() => {
-    axios.get("https://randomuser.me/api?results=30").then((res) => {
-      setUsers(res.data.results);
-      setFiltered(res.data.results);
-    });
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/users");
+        setUsers(res.data);
+        setFiltered(res.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        alert("Failed to fetch users. Please try again later.");
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   useEffect(() => {
@@ -23,7 +31,7 @@ const UserTable = () => {
       JSON.stringify(user).toLowerCase().includes(keyword)
     );
     setFiltered(filteredData);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   }, [search, users]);
 
   const sortBy = (keyPath) => {
@@ -97,14 +105,12 @@ const UserTable = () => {
             <tbody>
               {currentUsers.map((user, index) => (
                 <tr key={index} className="border-b hover:bg-gray-50">
-                  <td className="p-3">
-                    {user.name.first} {user.name.last}
-                  </td>
+                  <td className="p-3">{user.name}</td>
                   <td className="p-3">{user.email}</td>
-                  <td className="p-3">{user.location.country}</td>
+                  <td className="p-3">{user.country}</td>
                   <td className="p-3">
                     <img
-                      src={user.picture.thumbnail}
+                      src={user.picture}
                       alt="avatar"
                       className="w-10 h-10 rounded-full"
                     />
