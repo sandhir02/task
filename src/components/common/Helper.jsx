@@ -15,20 +15,24 @@ export const menuItems = [
     icon: <CrownIcon />,
     label: "Membership",
     active: false,
+    key: "membership",
   },
   {
     icon: <MonitorIcon />,
     label: "Devices",
     active: false,
+    key: "devices",
   },
   {
     icon: <SettingsIcon />,
     label: "Settings",
     active: false,
+    key: "settings",
   },
   {
     icon: <ProfileIcon />,
     label: "Profile",
     active: true,
+    key: "profile",
   },
 ];
