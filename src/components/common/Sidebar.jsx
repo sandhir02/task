@@ -6,7 +6,6 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Extract active tab from URL
   const activeTab = location.pathname.split("/").pop() || "profile";
 
   const handleTabClick = (tabKey) => {
@@ -43,7 +42,6 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-      {/* <div className="flex-1">{renderContent()}</div> */}
     </div>
   );
 };
