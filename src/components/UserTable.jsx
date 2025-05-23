@@ -8,7 +8,7 @@ const UserTable = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 10;
+  const usersPerPage = 8;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -85,21 +85,41 @@ const UserTable = () => {
             <thead>
               <tr className="bg-gray-200 text-left">
                 <th
-                  onClick={() => sortBy("name.first")}
-                  className="p-3 cursor-pointer font-helvetica">
-                  Name
+                  onClick={() => sortBy("name")}
+                  className="p-3 cursor-pointer">
+                  Name{" "}
+                  {sortConfig.key === "name" &&
+                    (sortConfig.direction === "asc" ? "⬆️" : "⬇️")}
                 </th>
                 <th
                   onClick={() => sortBy("email")}
-                  className="p-3 cursor-pointer font-helvetica">
-                  Email
+                  className="p-3 cursor-pointer">
+                  Email{" "}
+                  {sortConfig.key === "email" &&
+                    (sortConfig.direction === "asc" ? "⬆️" : "⬇️")}
                 </th>
                 <th
-                  onClick={() => sortBy("location.country")}
-                  className="p-3 cursor-pointer font-helvetica">
-                  Country
+                  onClick={() => sortBy("phone")}
+                  className="p-3 cursor-pointer">
+                  Phone{" "}
+                  {sortConfig.key === "phone" &&
+                    (sortConfig.direction === "asc" ? "⬆️" : "⬇️")}
                 </th>
-                <th className="p-3 font-helvetica">Profile</th>
+                <th
+                  onClick={() => sortBy("city")}
+                  className="p-3 cursor-pointer">
+                  City{" "}
+                  {sortConfig.key === "city" &&
+                    (sortConfig.direction === "asc" ? "⬆️" : "⬇️")}
+                </th>
+                <th
+                  onClick={() => sortBy("country")}
+                  className="p-3 cursor-pointer">
+                  Country{" "}
+                  {sortConfig.key === "country" &&
+                    (sortConfig.direction === "asc" ? "⬆️" : "⬇️")}
+                </th>
+                <th className="p-3">Profile</th>
               </tr>
             </thead>
             <tbody>
@@ -107,6 +127,8 @@ const UserTable = () => {
                 <tr key={index} className="border-b hover:bg-gray-50">
                   <td className="p-3">{user.name}</td>
                   <td className="p-3">{user.email}</td>
+                  <td className="p-3">{user.phone}</td>
+                  <td className="p-3">{user.city}</td>
                   <td className="p-3">{user.country}</td>
                   <td className="p-3">
                     <img
